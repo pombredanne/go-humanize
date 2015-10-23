@@ -86,8 +86,8 @@ func TestBigBytes(t *testing.T) {
 		{"bytes(803)", bbyte(803), "803B"},
 		{"bytes(999)", bbyte(999), "999B"},
 
-		{"bytes(1024)", bbyte(1024), "1.0KB"},
-		{"bytes(1MB - 1)", bbyte(MByte - Byte), "1000KB"},
+		{"bytes(1024)", bbyte(1024), "1.0kB"},
+		{"bytes(1MB - 1)", bbyte(MByte - Byte), "1000kB"},
 
 		{"bytes(1MB)", bbyte(1024 * 1024), "1.0MB"},
 		{"bytes(1GB - 1K)", bbyte(GByte - KByte), "1000MB"},
@@ -203,5 +203,17 @@ func TestParseVeryBig(t *testing.T) {
 		if x.String() != test.out {
 			t.Errorf("Expected %q for %q, got %v", test.out, test.in, x)
 		}
+	}
+}
+
+func BenchmarkParseBigBytes(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		ParseBigBytes("16.5Z")
+	}
+}
+
+func BenchmarkBigBytes(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		bibyte(16.5 * GByte)
 	}
 }

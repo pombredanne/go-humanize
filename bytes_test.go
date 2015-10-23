@@ -80,14 +80,16 @@ func TestBytes(t *testing.T) {
 		{"bytes(803)", Bytes(803), "803B"},
 		{"bytes(999)", Bytes(999), "999B"},
 
-		{"bytes(1024)", Bytes(1024), "1.0KB"},
-		{"bytes(1MB - 1)", Bytes(MByte - Byte), "1000KB"},
+		{"bytes(1024)", Bytes(1024), "1.0kB"},
+		{"bytes(9999)", Bytes(9999), "10kB"},
+		{"bytes(1MB - 1)", Bytes(MByte - Byte), "1000kB"},
 
 		{"bytes(1MB)", Bytes(1024 * 1024), "1.0MB"},
 		{"bytes(1GB - 1K)", Bytes(GByte - KByte), "1000MB"},
 
 		{"bytes(1GB)", Bytes(GByte), "1.0GB"},
 		{"bytes(1TB - 1M)", Bytes(TByte - MByte), "1000GB"},
+		{"bytes(10MB)", Bytes(9999 * 1000), "10MB"},
 
 		{"bytes(1TB)", Bytes(TByte), "1.0TB"},
 		{"bytes(1PB - 1T)", Bytes(PByte - TByte), "999TB"},
@@ -127,4 +129,16 @@ func TestBytes(t *testing.T) {
 
 		{"bytes(5.5GB)", Bytes(5.5 * GByte), "5.5GB"},
 	}.validate(t)
+}
+
+func BenchmarkParseBytes(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		ParseBytes("16.5GB")
+	}
+}
+
+func BenchmarkBytes(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Bytes(16.5 * GByte)
+	}
 }
